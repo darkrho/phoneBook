@@ -30,6 +30,10 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
+app.get("/", (request, response) => {
+  response.send("<h1>hellow phoneBook</h1>");
+});
+
 /* create id */
 const generateId = () => {
   const maxId =
@@ -39,8 +43,7 @@ const generateId = () => {
 
 /* return all data */
 app.get("/api/persons", (request, response) => {
-  const persons = JSON.stringify(contacts);
-  response.end(persons);
+  response.json(persons);
 });
 
 /* info page */
