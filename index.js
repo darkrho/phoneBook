@@ -1,4 +1,5 @@
 const express = require("express");
+const morgan = require("morgan");
 
 let contacts = [
   {
@@ -25,6 +26,7 @@ let contacts = [
 
 const app = express();
 app.use(express.json());
+app.use(morgan("dev"));
 
 /* create id */
 const generateId = () => {
