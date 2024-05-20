@@ -37,11 +37,6 @@ const generateId = () => {
   return maxId + 1;
 };
 
-/* home part */
-app.get("/", (request, response) => {
-  response.send("hello express");
-});
-
 /* return all data */
 app.get("/api/persons", (request, response) => {
   const persons = JSON.stringify(contacts);
