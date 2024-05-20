@@ -43,7 +43,7 @@ const generateId = () => {
 
 /* return all data */
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  response.json(contacts);
 });
 
 /* info page */
