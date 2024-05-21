@@ -43,7 +43,7 @@ const generateId = () => {
 };
 
 /* return all data */
-app.get("/persons", (request, response) => {
+app.get("/api/persons", (request, response) => {
   response.json(contacts);
 });
 
@@ -56,7 +56,7 @@ app.get("/info", (request, response) => {
 });
 
 /* one persons data */
-app.get("/persons/:id", (request, response) => {
+app.get("api/persons/:id", (request, response) => {
   const id = request.params.id;
   const person = contacts.filter((item) => item.id === Number(id));
   if (person[0]) {
@@ -66,7 +66,7 @@ app.get("/persons/:id", (request, response) => {
 });
 
 /* delete note */
-app.delete("/persons/:id", (request, response) => {
+app.delete("api/persons/:id", (request, response) => {
   const id = request.params.id;
   const persons = contacts.filter((item) => item.id !== Number(id));
   contacts = persons;
@@ -74,7 +74,7 @@ app.delete("/persons/:id", (request, response) => {
 });
 
 /* add a contact */
-app.post("/persons", (request, response) => {
+app.post("api/persons", (request, response) => {
   // get post data
   const newPerson = request.body;
   // check if person is on db
