@@ -29,6 +29,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(express.static("dist"));
 
 app.get("/", (request, response) => {
   response.send("<h1>hellow phoneBook</h1>");
@@ -42,7 +43,7 @@ const generateId = () => {
 };
 
 /* return all data */
-app.get("/api/persons", (request, response) => {
+app.get("/persons", (request, response) => {
   response.json(contacts);
 });
 
@@ -55,7 +56,7 @@ app.get("/info", (request, response) => {
 });
 
 /* one persons data */
-app.get("/api/persons/:id", (request, response) => {
+app.get("/persons/:id", (request, response) => {
   const id = request.params.id;
   const person = contacts.filter((item) => item.id === Number(id));
   if (person[0]) {
@@ -65,7 +66,7 @@ app.get("/api/persons/:id", (request, response) => {
 });
 
 /* delete note */
-app.delete("/api/persons/:id", (request, response) => {
+app.delete("/persons/:id", (request, response) => {
   const id = request.params.id;
   const persons = contacts.filter((item) => item.id !== Number(id));
   contacts = persons;
@@ -73,7 +74,7 @@ app.delete("/api/persons/:id", (request, response) => {
 });
 
 /* add a contact */
-app.post("/api/persons", (request, response) => {
+app.post("/persons", (request, response) => {
   // get post data
   const newPerson = request.body;
   // check if person is on db
