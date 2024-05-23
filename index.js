@@ -1,29 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
-
-let contacts = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
+const Person = require("./models/contacts");
 
 const app = express();
 app.use(cors());
@@ -44,12 +23,14 @@ const generateId = () => {
 
 /* return all data */
 app.get("/api/persons", (request, response) => {
-  response.json(contacts);
+  Person.find({}).then((contacts) => {
+    response.json(contacts);
+  });
 });
 
 /* info page */
 app.get("/info", (request, response) => {
-  const numPeople = contacts.length;
+  const numPeople = Person.find({}).then((contacts) => contacts.length);
   const today = new Date();
   const template = `<p>Phonebook has info for ${numPeople} people<p><br/><p>${today}</p>`;
   response.send(template);
@@ -58,7 +39,7 @@ app.get("/info", (request, response) => {
 /* one persons data */
 app.get("/api/persons/:id", (request, response) => {
   const id = request.params.id;
-  const person = contacts.filter((item) => item.id === Number(id));
+  const person = Person.findById(id).then((person) => person);
   if (person[0]) {
     return response.send(JSON.stringify(note));
   }
@@ -66,41 +47,30 @@ app.get("/api/persons/:id", (request, response) => {
 });
 
 /* delete note */
+/* 
 app.delete("/api/persons/:id", (request, response) => {
   const id = request.params.id;
   const persons = contacts.filter((item) => item.id !== Number(id));
   contacts = persons;
   response.sendStatus(200);
 });
-
+ */
 /* add a contact */
 app.post("/api/persons", (request, response) => {
   // get post data
   const newPerson = request.body;
   // check if person is on db
-  const personExist = contacts.filter(
-    (person) => person.name === newPerson.name
-  );
-  // generate a new id
-  const id = generateId();
-  // check if no data or if person already exist
-  if (Object.values(newPerson)[0] === undefined) {
-    return response.sendStatus(404);
-  } else if (newPerson.name === "" || newPerson.number === "") {
-    return response
-      .status(404)
-      .json({ error: "person name or number are empty" });
-  } else if (personExist[0] !== undefined) {
-    return response.status(404).json({ error: "person name already exist" });
+  if (newPerson === undefined) {
+    return response.status(400).json({ error: "content missing" });
   }
   // create a new contact
-  const contactToAdd = {
-    id: id,
+  const contactToAdd = new Person({
     name: newPerson.name,
     number: newPerson.number,
-  };
-  contacts.push(contactToAdd);
-  response.json(contactToAdd);
+  });
+  contactToAdd.save().then((person) => {
+    response.json(person);
+  });
 });
 /* connection part */
 
